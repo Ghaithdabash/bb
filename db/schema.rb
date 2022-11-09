@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_08_202710) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_09_231512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_08_202710) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
+  create_table "carts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_carts_on_user_id"
+  end
+
   create_table "frames", force: :cascade do |t|
     t.string "name"
     t.integer "status", default: 0
@@ -33,6 +40,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_08_202710) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.bigint "cart_id", null: false
+    t.string "parent_product_type", null: false
+    t.bigint "parent_product_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_id"], name: "index_items_on_cart_id"
+    t.index ["parent_product_type", "parent_product_id"], name: "index_items_on_parent_product"
   end
 
   create_table "jwt_denylist", force: :cascade do |t|
@@ -49,6 +67,27 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_08_202710) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.string "parent_product_type", null: false
+    t.bigint "parent_product_id", null: false
+    t.integer "quantity"
+    t.decimal "rate"
+    t.decimal "total"
+    t.string "currency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["parent_product_type", "parent_product_id"], name: "index_order_items_on_parent_product"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "prices", force: :cascade do |t|
@@ -70,6 +109,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_08_202710) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "currency"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

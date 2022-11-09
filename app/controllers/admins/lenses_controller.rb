@@ -4,7 +4,7 @@ class Admins::LensesController < ApplicationController
   def create
     lense = Lense.new(lense_params)
 
-    resp = if lense.save
+    if lense.save
       render status: 201, body: lense.to_json
     else
       render status: 406, body: lense.errors.full_messages.join(', ')

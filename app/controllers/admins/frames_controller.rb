@@ -3,8 +3,7 @@ class Admins::FramesController < ApplicationController
 
   def create
     frame = Frame.new(frame_params)
-
-    resp = if frame.save
+    if frame.save
       render status: 201, body: frame.to_json
     else
       render status: 406, body: frame.errors.full_messages.join(', ')
